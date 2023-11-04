@@ -73,6 +73,11 @@ createBoard(selectedBoardSize);
 // NOTE - Generate a random number between 1 and the board size squared. Set the class of the square with the random number to "award". Add the random number to the awardArray.
 function generateAward() {
   let randomAward = Math.floor(Math.random() * (selectedBoardSize * selectedBoardSize) + 1);
+  if(snakeArray.includes(randomAward)) {
+    console.log("award is on the snake");
+    generateAward();
+    return;
+  }
   console.log(randomAward);
   let award = document.getElementById(`${randomAward}`);
   award.setAttribute("class", "award");
