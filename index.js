@@ -105,13 +105,13 @@ if(event.key === "s" && gameStatus === false && snakeArray.length < 4) {
   moveLeft();
 } else if(event.key === "r") {
   resetGame();
-} else if(event.key === "ArrowUp" && gameStatus === true) {
+} else if(event.key === "ArrowUp" && gameStatus === true && lastMove !== "down") {
   moveUp();
-} else if(event.key === "ArrowDown" && gameStatus === true) {
+} else if(event.key === "ArrowDown" && gameStatus === true && lastMove !== "up") {
   moveDown();
-} else if(event.key === "ArrowLeft" && gameStatus === true) {
+} else if(event.key === "ArrowLeft" && gameStatus === true && lastMove !== "right") {
   moveLeft();
-} else if(event.key === "ArrowRight" && gameStatus === true) {
+} else if(event.key === "ArrowRight" && gameStatus === true && lastMove !== "left") {
   moveRight();
 }
 });
