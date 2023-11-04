@@ -1,3 +1,4 @@
+// REVIEW - This is the classic Nokia style snake game from the first massively popular nokia phones. This is a basic implementation using vanilla javascript. 
 
 let gameSpace = document.getElementById("gamespace")
 let gameStatus = false;
