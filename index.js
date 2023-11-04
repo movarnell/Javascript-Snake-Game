@@ -70,7 +70,7 @@ function generateAward() {
 //NOTE - Create a function that will add the snake class to the squares in the snakeArray at the beginning of the game or when reset.
 function snakeLocation() {
   for(let location of snakeArray) {
-    console.log(location);
+    //console.log(location);
     let snakePart = document.getElementById(`${location}`);
     snakePart.setAttribute("class", "snake");
 
@@ -108,6 +108,7 @@ if(event.key === "s" && gameStatus === false) {
 
 //NOTE Move the snake down the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "down". 
 function moveDown() {
+  checkForSnake();
   if(bottomSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] + selectedBoardSize)) {
     console.log("game over");
     gameStatus = false;
@@ -121,7 +122,10 @@ function moveDown() {
   snakeEnd.setAttribute("class", "square");
   if (!awardArray.includes(snakeArray[0])) {
   snakeArray.pop();
-  } 
+  } else {
+      console.log(`${snakeArray[0]} is the first square of the snake`)
+      awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+  }
   console.log(snakeArray);
   snakeLocation();
   lastMove = "down";
@@ -129,6 +133,7 @@ function moveDown() {
 }
 //NOTE Move the snake up the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "up". 
 function moveUp() {
+  checkForSnake();
   if(topSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] - selectedBoardSize)) {
     console.log("game over");
     gameStatus = false;
@@ -140,6 +145,9 @@ function moveUp() {
   snakeEnd.setAttribute("class", "square");
    if (!awardArray.includes(snakeArray[0])) {
      snakeArray.pop();
+   } else {
+     console.log(`${snakeArray[0]} is the first square of the snake`);
+     awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
    }
   console.log(snakeArray)
   snakeLocation();
@@ -148,6 +156,7 @@ function moveUp() {
 }
 //NOTE Move the snake left the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "left".
 function moveLeft() {
+checkForSnake();
   if(leftSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] - 1)) {
     console.log("game over");
     gameStatus = false;
@@ -161,6 +170,9 @@ function moveLeft() {
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
+ } else {
+   console.log(`${snakeArray[0]} is the first square of the snake`);
+   awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
  }
    console.log(snakeArray);
   snakeLocation();
@@ -170,6 +182,7 @@ function moveLeft() {
 
 //NOTE Move the snake right the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "right".
 function moveRight() {
+  checkForSnake();
   if(rightSide.includes(snakeArray[0] || snakeArray.includes(snakeArray[0] + 1))) {
     console.log("game over");
     gameStatus = false;
@@ -183,7 +196,11 @@ function moveRight() {
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
- }  console.log(snakeArray);
+ } else {
+   console.log(`${snakeArray[0]} is the first square of the snake`);
+   awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+ }  
+ console.log(snakeArray);
   snakeLocation();
   lastMove = "right";
     console.log("right");
@@ -202,12 +219,17 @@ function resetGame() {
   snakeLocation();
 }
 
+
+
+
+
+
 //NOTE Set an interval to generate an award every 2 seconds unless there are already 2 awards on the board.
 
 
 
 function award() {
-  console.log("award")
+  
   if (awardArray.length < 1 && gameStatus === true ) {
     console.log("award");
     generateAward();
