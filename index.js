@@ -10,6 +10,7 @@ let snakeArray = [44 , 45, 46];
 let awardArray = [];
 let lastMove;
 let squareCounter = 1;
+let currentScore = 0; 
 //NOTE - Creates the right side boundaries of the board.
 let rightSide = [];
 for (let i = 1; i <= selectedBoardSize; i++) {
@@ -34,6 +35,7 @@ for (let i = 0; i < selectedBoardSize; i++) {
 //NOTE - Creates the board, and adds the board to the gameSpace div.
 let board = document.createElement("div");
 board.setAttribute("class", "board");
+
 console.log(gameSpace)
 gameSpace.appendChild(board);
 
@@ -47,12 +49,22 @@ function createBoard(selectedBoardSize) {
             let square = document.createElement("div");
             square.setAttribute("class", "square");
             square.setAttribute("id", `${squareCounter}`);
-            square.innerHTML = `${squareCounter}`;
+            //square.innerHTML = `${squareCounter}`;
             row.appendChild(square);
             //console.log("squareCounter", squareCounter  + " " + "square");
             squareCounter++;
         }
     }
+    let score = document.createElement("div");
+    score.setAttribute("id", "score");
+    score.innerHTML = `Score: ${currentScore}`;
+    score.setAttribute("class", "score pixel-font");
+    gameSpace.appendChild(score);
+    let instructions = document.createElement("div");
+    instructions.setAttribute("id", "instructions");
+    instructions.innerHTML = `Press "s" to start and "r" to reset`;
+    instructions.setAttribute("class", "score pixel-font");
+    gameSpace.appendChild(instructions);
 }
 
 createBoard(selectedBoardSize);
@@ -72,7 +84,7 @@ function snakeLocation() {
   for(let location of snakeArray) {
     //console.log(location);
     let snakePart = document.getElementById(`${location}`);
-    snakePart.setAttribute("class", "snake");
+    snakePart.setAttribute("class", "square snake");
 
   }
 }
@@ -85,7 +97,7 @@ snakeLocation();
 document.addEventListener('keydown', function(event) {
 
 console.log(event.key);
-if(event.key === "s" && gameStatus === false) {
+if(event.key === "s" && gameStatus === false && snakeArray.length < 4) {
   console.log("Game Started");
   gameStatus = true;
   moveLeft();
@@ -108,9 +120,9 @@ if(event.key === "s" && gameStatus === false) {
 
 //NOTE Move the snake down the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "down". 
 function moveDown() {
-  checkForSnake();
+  ;
   if(bottomSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] + selectedBoardSize)) {
-    console.log("game over");
+    console.log("game over you were moving down");
     gameStatus = false;
     return;
   }
@@ -122,6 +134,7 @@ function moveDown() {
   snakeEnd.setAttribute("class", "square");
   if (!awardArray.includes(snakeArray[0])) {
   snakeArray.pop();
+  currentScore++;
   } else {
       console.log(`${snakeArray[0]} is the first square of the snake`)
       awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
@@ -133,9 +146,9 @@ function moveDown() {
 }
 //NOTE Move the snake up the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "up". 
 function moveUp() {
-  checkForSnake();
+  
   if(topSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] - selectedBoardSize)) {
-    console.log("game over");
+    console.log("game over you were moving up");
     gameStatus = false;
     return;
   }
@@ -145,6 +158,7 @@ function moveUp() {
   snakeEnd.setAttribute("class", "square");
    if (!awardArray.includes(snakeArray[0])) {
      snakeArray.pop();
+     currentScore++;
    } else {
      console.log(`${snakeArray[0]} is the first square of the snake`);
      awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
@@ -156,9 +170,9 @@ function moveUp() {
 }
 //NOTE Move the snake left the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "left".
 function moveLeft() {
-checkForSnake();
+
   if(leftSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] - 1)) {
-    console.log("game over");
+    console.log("game over you were moving left");
     gameStatus = false;
     return;
   }
@@ -170,6 +184,7 @@ checkForSnake();
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
+   currentScore++;
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
@@ -182,9 +197,10 @@ checkForSnake();
 
 //NOTE Move the snake right the board and remove the last square of the snake unless it is on an award square. Set the lastMove variable to "right".
 function moveRight() {
-  checkForSnake();
-  if(rightSide.includes(snakeArray[0] || snakeArray.includes(snakeArray[0] + 1))) {
-    console.log("game over");
+  
+  console.log(`Move Right ${snakeArray[0]+1}, Snake Array .includes = ${snakeArray.includes(snakeArray[0] + 1)}`)
+  if(rightSide.includes(snakeArray[0]) || snakeArray.includes(snakeArray[0] + 1)) {
+    console.log("game over you were moving right");
     gameStatus = false;
     return;
   }
@@ -196,6 +212,7 @@ function moveRight() {
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
+   currentScore++;
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
@@ -217,6 +234,7 @@ function resetGame() {
 
   }
   snakeLocation();
+  currentScore = 0;
 }
 
 

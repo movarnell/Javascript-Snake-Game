@@ -1,10 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+
+
+.pixel-font {
+    font-family: 'Pixelify Sans', sans-serif;
+}
 
 .board {
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
     align-items: center;
-    
-    
+    /* border-top: 1px solid #665b11; */
+    /* background-color: #bbc730; */
 }
 
 .square {
@@ -14,12 +22,28 @@
     width: 2rem;
     height: 2rem;
     font-size: x-small;
-    /* border: 1px solid black;   
-     */
+        background-color: #bbc730;
+
+    /* border: 1px solid black;    */
+    
+}
+
+.score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    /* border: 1px solid black;    */
+    
+}
+
+
+.row {
+    border-inline: 1px solid black;
 }
 
 .award {
-    background-color: yellow;
+    background-color: #665b11;
     /* border: 1px solid black; */
     width: 2rem;
     height: 2rem;
@@ -28,8 +52,9 @@
 
 .snake {
     
-    background-color: green;
+    background-color:#665b11;
     /* border: 1px solid black; */
+   
     width: 2rem;
     height: 2rem;
     font-size: x-small;
@@ -39,5 +64,6 @@
 .row {
     display: flex;
     flex-direction: row;
+    
 }
 
