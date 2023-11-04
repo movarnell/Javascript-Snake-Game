@@ -63,8 +63,9 @@ function createBoard(selectedBoardSize) {
     gameSpace.appendChild(score);
     let instructions = document.createElement("div");
     instructions.setAttribute("id", "instructions");
-    instructions.innerHTML = `Press "s" to start and "r" to reset`;
+    instructions.innerHTML = `Press "s" to start and "r" to reset. Use the arrow keys to move.`;
     instructions.setAttribute("class", "score pixel-font");
+
     gameSpace.appendChild(instructions);
 }
 
@@ -135,10 +136,12 @@ function moveDown() {
   snakeEnd.setAttribute("class", "square");
   if (!awardArray.includes(snakeArray[0])) {
   snakeArray.pop();
-  currentScore++;
+  
   } else {
       console.log(`${snakeArray[0]} is the first square of the snake`)
       awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+      currentScore++;
+      score.innerHTML = `Score: ${currentScore}`;
   }
   console.log(snakeArray);
   snakeLocation();
@@ -159,10 +162,13 @@ function moveUp() {
   snakeEnd.setAttribute("class", "square");
    if (!awardArray.includes(snakeArray[0])) {
      snakeArray.pop();
-     currentScore++;
+  
+
    } else {
      console.log(`${snakeArray[0]} is the first square of the snake`);
      awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+     currentScore++;
+     score.innerHTML = `Score: ${currentScore}`;
    }
   console.log(snakeArray)
   snakeLocation();
@@ -185,10 +191,12 @@ function moveLeft() {
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
-   currentScore++;
+  
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+   currentScore++;
+   score.innerHTML = `Score: ${currentScore}`;
  }
    console.log(snakeArray);
   snakeLocation();
@@ -213,10 +221,11 @@ function moveRight() {
   snakeEnd.setAttribute("class", "square");
  if (!awardArray.includes(snakeArray[0])) {
    snakeArray.pop();
-   currentScore++;
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+   currentScore++;
+   score.innerHTML = `Score: ${currentScore}`;
  }  
  console.log(snakeArray);
   snakeLocation();
@@ -236,6 +245,8 @@ function resetGame() {
   }
   snakeLocation();
   currentScore = 0;
+    score.innerHTML = `Score: ${currentScore}`;
+
 }
 
 
