@@ -19,15 +19,11 @@ function getHighScores() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        let highScore = document.createElement("div");
-        let br = document.createElement("br");
-        highScore.appendChild(br);
+        
+        let highScore = document.getElementById("highscore");  
         highScore.setAttribute("id", "highscore");
         highScore.setAttribute("class", "score pixel-font");
         highScore.innerHTML = `High Score: ${data[0].score}`;
-
-        let newScore = document.getElementById("highscore");
-        newScore.appendChild(highScore);
       })
       .catch((error) => console.log(error));
   } catch (error) {
@@ -163,6 +159,7 @@ function moveDown() {
     bottomSide.includes(snakeArray[0]) ||
     snakeArray.includes(snakeArray[0] + selectedBoardSize)
   ) {
+    gameOverSound();
     console.log("game over you were moving down");
     gameStatus = false;
     return;
@@ -178,6 +175,7 @@ function moveDown() {
   } else {
     console.log(`${snakeArray[0]} is the first square of the snake`);
     awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+    playSound();
     updateHighScore();
     score.innerHTML = `Score: ${currentScore}`;
   }
@@ -192,6 +190,7 @@ function moveUp() {
     topSide.includes(snakeArray[0]) ||
     snakeArray.includes(snakeArray[0] - selectedBoardSize)
   ) {
+    gameOverSound();
     console.log("game over you were moving up");
     gameStatus = false;
     return;
@@ -207,6 +206,7 @@ function moveUp() {
   } else {
     console.log(`${snakeArray[0]} is the first square of the snake`);
     awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+    playSound();
     updateHighScore();
     score.innerHTML = `Score: ${currentScore}`;
   }
@@ -221,6 +221,7 @@ function moveLeft() {
     leftSide.includes(snakeArray[0]) ||
     snakeArray.includes(snakeArray[0] - 1)
   ) {
+    gameOverSound();
     console.log("game over you were moving left");
     gameStatus = false;
     return;
@@ -236,6 +237,7 @@ function moveLeft() {
   } else {
     console.log(`${snakeArray[0]} is the first square of the snake`);
     awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+    playSound();
     updateHighScore();
     score.innerHTML = `Score: ${currentScore}`;
   }
@@ -256,6 +258,7 @@ function moveRight() {
     rightSide.includes(snakeArray[0]) ||
     snakeArray.includes(snakeArray[0] + 1)
   ) {
+    gameOverSound();
     console.log("game over you were moving right");
     gameStatus = false;
     return;
@@ -271,6 +274,7 @@ function moveRight() {
   } else {
     console.log(`${snakeArray[0]} is the first square of the snake`);
     awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
+    playSound();
     updateHighScore();
     score.innerHTML = `Score: ${currentScore}`;
   }
@@ -284,15 +288,21 @@ function resetGame() {
   snakeArray = [44, 45, 46];
   awardArray = [];
   gameStatus = false;
+  
   snakeLocation();
   for (let i = 0; i < selectedBoardSize * selectedBoardSize; i++) {
     let square = document.getElementById(`${i + 1}`);
     square.setAttribute("class", "square");
   }
   snakeLocation();
+  getHighScores();
   currentScore = 0;
   score.innerHTML = `Score: ${currentScore}`;
+  
+  
 }
+
+
 
 //NOTE Function to check current high score and update if necessary as well as incrementing the player's score.
 function updateHighScore() {
@@ -328,7 +338,7 @@ function updateHighScore() {
 //NOTE Set an interval to generate an award every 2 seconds unless there are already 2 awards on the board.
 
 function award() {
-  if (awardArray.length < 1 && gameStatus === true) {
+  if (awardArray.length < 2 && gameStatus === true) {
     console.log("award");
     generateAward();
   }
@@ -348,6 +358,22 @@ function moveSnake() {
     }
   }
 }
+
+//NOTE - Play sound when award is eaten.
+function playSound() {
+  let audio = new Audio(
+    "mixkit-game-balloon-or-bubble-pop-3069.wav"
+  );
+  audio.play();
+}
+
+function gameOverSound() {
+  let audio = new Audio(
+    "gameover.wav"
+  );
+  audio.play();
+}
+
 //NOTE Set an interval to move the snake every second.
-setInterval(() => moveSnake(), 1000);
+setInterval(() => moveSnake(), 500);
 setInterval(() => award(), 2000);
