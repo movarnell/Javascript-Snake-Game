@@ -288,6 +288,7 @@ function resetGame() {
   snakeArray = [44, 45, 46];
   awardArray = [];
   gameStatus = false;
+  document.getElementById("game-over-alert").innerHTML = "";
   
   snakeLocation();
   for (let i = 0; i < selectedBoardSize * selectedBoardSize; i++) {
@@ -368,10 +369,14 @@ function playSound() {
 }
 
 function gameOverSound() {
+  let gameOverAlert = document.getElementById("game-over-alert");
+gameOverAlert.setAttribute("class", "game-over-alert pixel-font");
+gameOverAlert.innerHTML = "Game Over!";
   let audio = new Audio(
     "gameover.wav"
   );
   audio.play();
+  
 }
 
 //NOTE Set an interval to move the snake every second.
