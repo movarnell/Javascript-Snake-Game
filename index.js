@@ -12,6 +12,33 @@ let awardArray = [];
 let lastMove;
 let squareCounter = 1;
 let currentScore = 0; 
+
+let URL = "https://6547b4c7902874dff3acaa5e.mockapi.io/highscores";
+
+//NOTE API call to get high scores
+function getHighScores() {
+  try {
+  fetch(URL)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    let highScore = document.createElement("div");
+    let br = document.createElement("br");
+    highScore.appendChild(br);
+    highScore.setAttribute("id", "highscore");
+    highScore.setAttribute("class", "score pixel-font");
+    highScore.innerHTML = `High Score: ${data[0].score}`;
+
+    
+    let newScore = document.getElementById("highscore");
+    newScore.appendChild(highScore);
+  })
+  .catch(error => console.log(error));
+  } catch(error) {
+    console.log(error);
+  }
+}
+getHighScores();
 //NOTE - Creates the right side boundaries of the board.
 let rightSide = [];
 for (let i = 1; i <= selectedBoardSize; i++) {
@@ -56,16 +83,17 @@ function createBoard(selectedBoardSize) {
             squareCounter++;
         }
     }
-    let score = document.createElement("div");
+    let score = document.getElementById("score");
     score.setAttribute("id", "score");
     score.innerHTML = `Score: ${currentScore}`;
     score.setAttribute("class", "score pixel-font");
     gameSpace.appendChild(score);
+    
     let instructions = document.createElement("div");
     instructions.setAttribute("id", "instructions");
     instructions.innerHTML = `Press "s" to start and "r" to reset. Use the arrow keys to move.`;
     instructions.setAttribute("class", "score pixel-font");
-
+    
     gameSpace.appendChild(instructions);
 }
 
@@ -145,7 +173,7 @@ function moveDown() {
   } else {
       console.log(`${snakeArray[0]} is the first square of the snake`)
       awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
-      currentScore++;
+      updateHighScore();
       score.innerHTML = `Score: ${currentScore}`;
   }
   console.log(snakeArray);
@@ -172,7 +200,7 @@ function moveUp() {
    } else {
      console.log(`${snakeArray[0]} is the first square of the snake`);
      awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
-     currentScore++;
+      updateHighScore();
      score.innerHTML = `Score: ${currentScore}`;
    }
   console.log(snakeArray)
@@ -200,7 +228,7 @@ function moveLeft() {
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
-   currentScore++;
+   updateHighScore();
    score.innerHTML = `Score: ${currentScore}`;
  }
    console.log(snakeArray);
@@ -229,7 +257,7 @@ function moveRight() {
  } else {
    console.log(`${snakeArray[0]} is the first square of the snake`);
    awardArray.splice(awardArray.indexOf(snakeArray[0]), 1);
-   currentScore++;
+    updateHighScore();
    score.innerHTML = `Score: ${currentScore}`;
  }  
  console.log(snakeArray);
@@ -254,7 +282,34 @@ function resetGame() {
 
 }
 
+//NOTE Function to check current high score and update if necessary as well as incrementing the player's score.
+function updateHighScore() {
+ fetch(URL)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    data = data.sort((a, b) => b.score - a.score);
+    if(currentScore > data[0].score) {
+      console.log("new high score");
+      let newHighScore = {
+        score: currentScore
+      }
+      fetch(URL + "/" + data[0].id, {
+        method: "PUT",
+        body: JSON.stringify(newHighScore),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => console.log(error));
+    }
+  }).catch(error => console.log(error));
 
+  currentScore++;
+}
 
 
 
