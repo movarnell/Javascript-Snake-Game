@@ -6,7 +6,7 @@ let selectedBoardSize = 25;
 //NOTE - snakeArray is initial snake position.
 let snakeArray = [44, 45, 46];
 let awardArray = [];
-let lastMove;
+let lastMove = "left";
 let squareCounter = 1;
 let currentScore = 0;
 
@@ -19,8 +19,8 @@ function getHighScores() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        
-        let highScore = document.getElementById("highscore");  
+
+        let highScore = document.getElementById("highscore");
         highScore.setAttribute("id", "highscore");
         highScore.setAttribute("class", "score pixel-font");
         highScore.innerHTML = `High Score: ${data[0].score}`;
@@ -31,26 +31,21 @@ function getHighScores() {
   }
 }
 getHighScores();
-//NOTE - Creates the right side boundaries of the board.
-let rightSide = [];
-for (let i = 1; i <= selectedBoardSize; i++) {
-  rightSide.push(selectedBoardSize * i);
-}
-//NOTE - Creates the left side boundaries of the board.
-let leftSide = [];
-for (let i = 0; i < selectedBoardSize; i++) {
-  leftSide.push(selectedBoardSize * i + 1);
-}
-//NOTE - Creates the top side boundaries of the board.
-let topSide = [];
-for (let i = 1; i <= selectedBoardSize; i++) {
-  topSide.push(i);
-}
-//NOTE - Creates the bottom side boundaries of the board.
-let bottomSide = [];
-for (let i = 0; i < selectedBoardSize; i++) {
-  bottomSide.push(selectedBoardSize * selectedBoardSize - i);
-}
+
+// Refactoring to use Array.from for more concise code
+const rightSide = Array.from(
+  { length: selectedBoardSize },
+  (_, i) => selectedBoardSize * (i + 1)
+);
+const leftSide = Array.from(
+  { length: selectedBoardSize },
+  (_, i) => selectedBoardSize * i + 1
+);
+const topSide = Array.from({ length: selectedBoardSize }, (_, i) => i + 1);
+const bottomSide = Array.from(
+  { length: selectedBoardSize },
+  (_, i) => selectedBoardSize ** 2 - i
+);
 
 //NOTE - Creates the board, and adds the board to the gameSpace div.
 let board = document.createElement("div");
@@ -59,34 +54,47 @@ board.setAttribute("class", "board");
 console.log(gameSpace);
 gameSpace.appendChild(board);
 
-function createBoard(selectedBoardSize) {
-  for (let i = 0; i < selectedBoardSize; i++) {
-    let row = document.createElement("div");
-    row.setAttribute("class", "row");
-    board.appendChild(row);
+function createSquare(row, id) {
+  let square = document.createElement("div");
+  square.setAttribute("class", "square");
+  square.setAttribute("id", `${id}`);
+  row.appendChild(square);
+}
 
-    for (let j = 0; j < selectedBoardSize; j++) {
-      let square = document.createElement("div");
-      square.setAttribute("class", "square");
-      square.setAttribute("id", `${squareCounter}`);
-      //square.innerHTML = `${squareCounter}`;
-      row.appendChild(square);
-      //console.log("squareCounter", squareCounter  + " " + "square");
-      squareCounter++;
-    }
+function createRow(parent, size, startId) {
+  let row = document.createElement("div");
+  row.setAttribute("class", "row game-board");
+  parent.appendChild(row);
+
+  for (let j = 0; j < size; j++) {
+    createSquare(row, startId + j);
   }
+}
+
+function createScore(parent) {
   let score = document.getElementById("score");
   score.setAttribute("id", "score");
   score.innerHTML = `Score: ${currentScore}`;
   score.setAttribute("class", "score pixel-font");
-  gameSpace.appendChild(score);
+  parent.appendChild(score);
+}
 
+function createInstructions(parent) {
   let instructions = document.createElement("div");
   instructions.setAttribute("id", "instructions");
   instructions.innerHTML = `Press "s" to start and "r" to reset. Use the arrow keys to move.`;
   instructions.setAttribute("class", "score pixel-font");
+  parent.appendChild(instructions);
+}
 
-  gameSpace.appendChild(instructions);
+function createBoard(selectedBoardSize) {
+  for (let i = 0; i < selectedBoardSize; i++) {
+    createRow(board, selectedBoardSize, squareCounter);
+    squareCounter += selectedBoardSize;
+  }
+
+  createScore(gameSpace);
+  createInstructions(gameSpace);
 }
 
 createBoard(selectedBoardSize);
@@ -102,20 +110,43 @@ function generateAward() {
   }
   console.log(randomAward);
   let award = document.getElementById(`${randomAward}`);
-  award.setAttribute("class", "award");
+  award.setAttribute("class", "square award");
   awardArray.push(randomAward);
   console.log(awardArray);
 }
 
 //NOTE - Create a function that will add the snake class to the squares in the snakeArray at the beginning of the game or when reset.
 function snakeLocation() {
+ 
   for (let location of snakeArray) {
     //console.log(location);
     let snakePart = document.getElementById(`${location}`);
+
     snakePart.setAttribute("class", "square snake");
   }
+  snakeHead();
 }
 snakeLocation();
+
+function snakeHead() {
+  console.log("snake head");
+  let snakeHead = document.getElementById(`${snakeArray[0]}`);
+
+  if (lastMove === "left") {
+    snakeHead.setAttribute("class", "square head snake-head-left");
+  } else if (lastMove === "up") {
+    snakeHead.setAttribute("class", "square head snake-head-up");
+  } else if (lastMove === "down") {
+    snakeHead.setAttribute("class", "square head snake-head-down");
+  } else if (lastMove === "right") {
+    snakeHead.setAttribute("class", "square head snake-head-right");
+  } else {
+    //FIXME This else statement may be unnecessary
+    snakeHead.setAttribute("class", "square head snake-head-up");
+  }
+  let snakeBody = document.getElementById(`${snakeArray[1]}`);
+  snakeBody.setAttribute("class", "square snake");
+}
 
 //NOTE - Set the gameStatus to true when the "s" key is pressed. Set the gameStatus to false when the "r" key is pressed. Move the snake up when the "ArrowUp" key is pressed. Move the snake down when the "ArrowDown" key is pressed. Move the snake left when the "ArrowLeft" key is pressed. Move the snake right when the "ArrowRight" key is pressed.
 document.addEventListener("keydown", function (event) {
@@ -132,24 +163,30 @@ document.addEventListener("keydown", function (event) {
     lastMove !== "down"
   ) {
     moveUp();
+    snakeHead();
   } else if (
     event.key === "ArrowDown" &&
     gameStatus === true &&
     lastMove !== "up"
   ) {
     moveDown();
+        snakeHead();
+
   } else if (
     event.key === "ArrowLeft" &&
     gameStatus === true &&
     lastMove !== "right"
   ) {
     moveLeft();
+        snakeHead();
+
   } else if (
     event.key === "ArrowRight" &&
     gameStatus === true &&
     lastMove !== "left"
   ) {
     moveRight();
+        snakeHead();
   }
 });
 
@@ -165,7 +202,9 @@ function moveDown() {
     return;
   }
   snakeArray.unshift(snakeArray[0] + selectedBoardSize);
+  
   console.log(snakeArray[0] + selectedBoardSize);
+
   let snakeEnd = document.getElementById(
     `${snakeArray[snakeArray.length - 1]}`
   );
@@ -180,6 +219,7 @@ function moveDown() {
     score.innerHTML = `Score: ${currentScore}`;
   }
   console.log(snakeArray);
+  
   snakeLocation();
   lastMove = "down";
   console.log("down");
@@ -289,21 +329,26 @@ function resetGame() {
   awardArray = [];
   gameStatus = false;
   document.getElementById("game-over-alert").innerHTML = "";
-  
-  snakeLocation();
+
+  // Reset all squares on the board
   for (let i = 0; i < selectedBoardSize * selectedBoardSize; i++) {
     let square = document.getElementById(`${i + 1}`);
     square.setAttribute("class", "square");
   }
+
+  // Reset snake location and head
+  lastMove = "left";
   snakeLocation();
-  getHighScores();
+  snakeHead();
+  
+
+  // Reset score
   currentScore = 0;
   score.innerHTML = `Score: ${currentScore}`;
-  
-  
+
+  // Get high scores
+  getHighScores();
 }
-
-
 
 //NOTE Function to check current high score and update if necessary as well as incrementing the player's score.
 function updateHighScore() {
@@ -362,23 +407,18 @@ function moveSnake() {
 
 //NOTE - Play sound when award is eaten.
 function playSound() {
-  let audio = new Audio(
-    "mixkit-game-balloon-or-bubble-pop-3069.wav"
-  );
+  let audio = new Audio("mixkit-game-balloon-or-bubble-pop-3069.wav");
   audio.play();
 }
 
 function gameOverSound() {
   let gameOverAlert = document.getElementById("game-over-alert");
-gameOverAlert.setAttribute("class", "game-over-alert pixel-font");
-gameOverAlert.innerHTML = "Game Over!";
-  let audio = new Audio(
-    "gameover.wav"
-  );
+  gameOverAlert.setAttribute("class", "game-over-alert pixel-font");
+  gameOverAlert.innerHTML = "Game Over!";
+  let audio = new Audio("gameover.wav");
   audio.play();
-  
 }
 
 //NOTE Set an interval to move the snake every second.
-setInterval(() => moveSnake(), 500);
+setInterval(() => moveSnake(), 750);
 setInterval(() => award(), 2000);
