@@ -117,7 +117,6 @@ function generateAward() {
 
 //NOTE - Create a function that will add the snake class to the squares in the snakeArray at the beginning of the game or when reset.
 function snakeLocation() {
- 
   for (let location of snakeArray) {
     //console.log(location);
     let snakePart = document.getElementById(`${location}`);
@@ -170,23 +169,21 @@ document.addEventListener("keydown", function (event) {
     lastMove !== "up"
   ) {
     moveDown();
-        snakeHead();
-
+    snakeHead();
   } else if (
     event.key === "ArrowLeft" &&
     gameStatus === true &&
     lastMove !== "right"
   ) {
     moveLeft();
-        snakeHead();
-
+    snakeHead();
   } else if (
     event.key === "ArrowRight" &&
     gameStatus === true &&
     lastMove !== "left"
   ) {
     moveRight();
-        snakeHead();
+    snakeHead();
   }
 });
 
@@ -202,7 +199,7 @@ function moveDown() {
     return;
   }
   snakeArray.unshift(snakeArray[0] + selectedBoardSize);
-  
+
   console.log(snakeArray[0] + selectedBoardSize);
 
   let snakeEnd = document.getElementById(
@@ -219,7 +216,7 @@ function moveDown() {
     score.innerHTML = `Score: ${currentScore}`;
   }
   console.log(snakeArray);
-  
+
   snakeLocation();
   lastMove = "down";
   console.log("down");
@@ -340,7 +337,6 @@ function resetGame() {
   lastMove = "left";
   snakeLocation();
   snakeHead();
-  
 
   // Reset score
   currentScore = 0;
