@@ -1,5 +1,5 @@
 // FILEPATH: /Users/michaelvarnell/Local Code/SnakeGame/index.test.js
-const { JSDOM } = require("jsdom");
+const { JSDOM } = require("jest-environment-jsdom");
 const { moveRight } = require("../index.js");
 
 beforeEach(() => {
